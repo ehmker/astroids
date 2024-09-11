@@ -1,11 +1,19 @@
 import pygame
 from constants import *
+from player import Player
 
 
 def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()
+    dt = 0
+    updatable = pygame.sprite.Group()
+    drawable = pygame.sprite.Group()
+    Player.containers = (updatable, drawable)
+
+    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+
     running = True
     while running:
         for event in pygame.event.get():
@@ -14,10 +22,16 @@ def main():
             ):  # pygame.QUIT => user clicked X to close the window
                 running = False
 
+        for item in updatable:
+            item.update(dt)
+
         screen.fill("black")
+        for item in drawable:
+            item.draw(screen)
+
         pygame.display.flip()
 
-        clock.tick(60)
+        dt = clock.tick(60) / 1000
     pygame.quit()
 
     print("Starting asteroids!")
